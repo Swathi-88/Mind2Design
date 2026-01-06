@@ -22,5 +22,13 @@
   "homepage": "https://github.com/Swathi-88/Mind2Design#readme",
   "devDependencies": {
     "vite": "^7.3.0"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.1.2",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwind-merge": "^3.4.0"
   }
 }
