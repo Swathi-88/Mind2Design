@@ -67,6 +67,10 @@ export const compilePrompt = (jobType, intent) => {
         parts.push(`Decoration style: ${intent.categoryAnswer || 'minimal flowers'}. Muted tones, centered portrait space, respectful framing.`);
     } else if (jobType?.id === 'festival') {
         parts.push(`Lighting density: ${intent.categoryAnswer || 'high density of diyas'}. Traditional festive motifs, marigold decor.`);
+    } else if (jobType?.id === 'business') {
+        parts.push(`Marketing focus: ${intent.categoryAnswer || 'brand identity'}. Professional layout, clear call to action, commercial appeal.`);
+    } else if (jobType?.id === 'event') {
+        parts.push(`Event scale: ${intent.categoryAnswer || 'large gathering'}. High-energy visuals, informative layout, eye-catching title.`);
     }
 
     // 7. Technical Words

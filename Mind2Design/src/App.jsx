@@ -29,6 +29,19 @@ export default function App() {
 
     // Transitions
     const handleJobSelect = (type) => {
+        // Reset intent when changing categories
+        setIntent({
+            occasion: '',
+            customOccasion: '',
+            style: 'traditional',
+            includePeople: false,
+            themeColor: '',
+            techWords: '',
+            specificText: '',
+            categoryAnswer: '',
+            layout: 'center'
+        });
+
         // Inject localized titles into the job object for sub-components
         const localizedJob = {
             ...type,

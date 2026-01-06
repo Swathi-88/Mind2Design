@@ -1,16 +1,44 @@
 import React, { useState } from 'react';
 import { translations } from '../utils/translations';
 
-const FESTIVALS = [
-    { id: 'diwali', name_en: 'Diwali', name_ta: 'தீபாவளி', icon: 'celebration', color: 'orange-500' },
-    { id: 'holi', name_en: 'Holi', name_ta: 'ஹோலி', icon: 'format_paint', color: 'primary' },
-    { id: 'eid', name_en: 'Eid', name_ta: 'ஈத்', icon: 'nightlight', color: 'emerald-600' },
-    { id: 'navratri', name_en: 'Navratri', name_ta: 'நவராத்திரி', icon: 'music_note', color: 'blue-600' },
-    { id: 'republic', name_en: 'Republic Day', name_ta: 'குடியரசு தினம்', icon: 'trip_origin', color: 'orange-600' },
-    { id: 'onam', name_en: 'Onam', name_ta: 'ஓணம்', icon: 'local_florist', color: 'green-600' },
-    { id: 'raksha', name_en: 'Raksha Bandhan', name_ta: 'ரக்ஷா பந்தன்', icon: 'family_restroom', color: 'pink-600' },
-    { id: 'christmas', name_en: 'Christmas', name_ta: 'கிறிஸ்துமஸ்', icon: 'cake', color: 'red-600' }
-];
+const CATEGORY_OPTIONS = {
+    festival: [
+        { id: 'diwali', name_en: 'Diwali', name_ta: 'தீபாவளி', icon: 'celebration', color: 'orange-500' },
+        { id: 'holi', name_en: 'Holi', name_ta: 'ஹோலி', icon: 'format_paint', color: 'primary' },
+        { id: 'eid', name_en: 'Eid', name_ta: 'ஈத்', icon: 'nightlight', color: 'emerald-600' },
+        { id: 'navratri', name_en: 'Navratri', name_ta: 'நவராத்திரி', icon: 'music_note', color: 'blue-600' },
+        { id: 'republic', name_en: 'Republic Day', name_ta: 'குடியரசு தினம்', icon: 'trip_origin', color: 'orange-600' },
+        { id: 'onam', name_en: 'Onam', name_ta: 'ஓணம்', icon: 'local_florist', color: 'green-600' },
+        { id: 'raksha', name_en: 'Raksha Bandhan', name_ta: 'ரக்ஷா பந்தன்', icon: 'family_restroom', color: 'pink-600' },
+        { id: 'christmas', name_en: 'Christmas', name_ta: 'கிறிஸ்துமஸ்', icon: 'cake', color: 'red-600' }
+    ],
+    crackers: [
+        { id: 'red_wrapper', name_en: 'Red Wrapper', name_ta: 'சிவப்பு உறை', icon: 'label', color: 'red-600' },
+        { id: 'green_wrapper', name_en: 'Green Wrapper', name_ta: 'பச்சை உறை', icon: 'label', color: 'green-600' },
+        { id: 'box_design', name_en: 'Box Design', name_ta: 'பெட்டி வடிவமைப்பு', icon: 'inventory_2', color: 'orange-500' },
+        { id: 'sparklers', name_en: 'Sparklers', name_ta: 'கம்பி மத்தாப்பு', icon: 'auto_awesome', color: 'yellow-500' },
+        { id: 'chakra', name_en: 'Ground Spinner', name_ta: 'தரைச்சக்கரம்', icon: 'motion_photos_on', color: 'blue-500' },
+        { id: 'flowerpot', name_en: 'Flower Pot', name_ta: 'பூச்சட்டி', icon: 'local_fire_department', color: 'orange-600' }
+    ],
+    funeral: [
+        { id: 'condolence', name_en: 'Condolence', name_ta: 'இரங்கல்', icon: 'cloud_done', color: 'slate-500' },
+        { id: 'memorial', name_en: 'Memorial', name_ta: 'நினைவஞ்சலி', icon: 'church', color: 'slate-600' },
+        { id: 'sympathy', name_en: 'Sympathy', name_ta: 'ஆறுதல்', icon: 'favorite', color: 'slate-400' },
+        { id: 'tribute', name_en: 'Tribute', name_ta: 'புகழஞ்சலி', icon: 'stars', color: 'slate-700' }
+    ],
+    business: [
+        { id: 'opening', name_en: 'Shop Opening', name_ta: 'கடை திறப்பு விழா', icon: 'storefront', color: 'blue-600' },
+        { id: 'offer', name_en: 'Discount Offer', name_ta: 'தள்ளுபடி சலுகை', icon: 'sell', color: 'red-500' },
+        { id: 'new_arrival', name_en: 'New Arrival', name_ta: 'புதிய வரவு', icon: 'new_releases', color: 'emerald-600' },
+        { id: 'menu', name_en: 'Service Menu', name_ta: 'சேவை விவரம்', icon: 'list_alt', color: 'slate-800' }
+    ],
+    event: [
+        { id: 'political', name_en: 'Political Meeting', name_ta: 'அரசியல் கூட்டம்', icon: 'groups', color: 'orange-700' },
+        { id: 'concert', name_en: 'Music Concert', name_ta: 'இசை நிகழ்ச்சி', icon: 'theater_comedy', color: 'purple-600' },
+        { id: 'school', name_en: 'School/College', name_ta: 'பள்ளி/கல்லூரி', icon: 'school', color: 'blue-500' },
+        { id: 'feast', name_en: 'Temple Feast', name_ta: 'கோவில் திருவிழா', icon: 'temple_hindu', color: 'red-600' }
+    ]
+};
 
 const STYLES = [
     { id: 'traditional', name_en: 'Traditional', name_ta: 'பாரம்பரியம்', icon: 'temple_hindu', desc: 'Classic Indian' },
@@ -21,6 +49,9 @@ const STYLES = [
 
 export default function IntentBuilder({ isTamil, jobType, intent, setIntent, step, setStep, onGenerate, onBack }) {
     const t = translations[isTamil ? 'ta' : 'en'];
+    const jobId = jobType?.id || 'festival';
+    const options = CATEGORY_OPTIONS[jobId] || CATEGORY_OPTIONS.festival;
+    const step1Label = t[`select_${jobId}`] || t.select_occasion;
 
     const renderStep = () => {
         switch (step) {
@@ -28,7 +59,7 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                 return (
                     <div className="flex flex-col gap-6">
                         <div>
-                            <h2 className="text-xl font-bold">{t.select_occasion}</h2>
+                            <h2 className="text-xl font-bold">{step1Label}</h2>
                             <div className="mt-4 flex flex-col gap-4">
                                 <input
                                     type="text"
@@ -38,7 +69,7 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                     onChange={(e) => setIntent({ ...intent, customOccasion: e.target.value })}
                                 />
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                    {FESTIVALS.map((f) => (
+                                    {options.map((f) => (
                                         <div
                                             key={f.id}
                                             onClick={() => setIntent({ ...intent, occasion: f.id, customOccasion: '' })}
