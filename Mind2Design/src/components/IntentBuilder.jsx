@@ -156,6 +156,42 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                         )}
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            {/* Design Mode: AI vs Real */}
+                            <div className="flex flex-col gap-4">
+                                <label className="text-sm font-bold">{t.design_mode}</label>
+                                <div className="flex gap-4">
+                                    {[
+                                        { id: 'ai', label: t.mode_ai },
+                                        { id: 'real', label: t.mode_real }
+                                    ].map((m) => (
+                                        <button
+                                            key={m.id}
+                                            onClick={() => setIntent({ ...intent, designMode: m.id })}
+                                            className={`flex-1 py-3 px-2 rounded-lg border-2 font-bold text-[10px] uppercase transition-all ${intent.designMode === m.id ? 'border-primary bg-primary/5 text-primary' : 'border-slate-100 bg-slate-50 dark:bg-white/5'}`}
+                                        >
+                                            {m.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Symbol Selection */}
+                            <div className="flex flex-col gap-4">
+                                <label className="text-sm font-bold">{t.symbol_select}</label>
+                                <select
+                                    className="p-3 rounded-lg bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-800 text-sm font-bold outline-none"
+                                    value={intent.symbol}
+                                    onChange={(e) => setIntent({ ...intent, symbol: e.target.value })}
+                                >
+                                    <option value="none">{t.symbol_none}</option>
+                                    <option value="hindu">{t.symbol_hindu}</option>
+                                    <option value="muslim">{t.symbol_muslim}</option>
+                                    <option value="christian">{t.symbol_christian}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                             {/* People Toggle */}
                             <div className="flex flex-col gap-4">
                                 <label className="text-sm font-bold">{t.include_people}</label>
@@ -183,6 +219,18 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                     onChange={(e) => setIntent({ ...intent, techWords: e.target.value })}
                                 />
                             </div>
+                        </div>
+
+                        {/* Extra Refinement Note */}
+                        <div className="flex flex-col gap-4">
+                            <label className="text-sm font-bold">{t.extra_refinement}</label>
+                            <textarea
+                                rows="2"
+                                placeholder={t.refine_placeholder}
+                                className="p-4 rounded-lg bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-800 resize-none italic text-sm"
+                                value={intent.extraNote || ''}
+                                onChange={(e) => setIntent({ ...intent, extraNote: e.target.value })}
+                            />
                         </div>
                     </div>
                 );

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { translations } from '../utils/translations';
-import { describePromptInTamil } from '../services/promptCompiler';
+import { describePromptInTamil, compilePrompt } from '../services/promptCompiler';
 
 export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt, onBack }) {
     const t = translations[isTamil ? 'ta' : 'en'];
     const [editingPrompt, setEditingPrompt] = useState(compiledPrompt);
     const [copied, setCopied] = useState(false);
-    const [showTamilDesc, setShowTamilDesc] = useState(isTamil);
+    const [modifiers, setModifiers] = useState([]);
+    const [userChange, setUserChange] = useState('');
 
     const handleCopy = () => {
         navigator.clipboard.writeText(editingPrompt);
@@ -14,7 +15,31 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleRefine = (mod) => {
+        const newMods = modifiers.includes(mod)
+            ? modifiers.filter(m => m !== mod)
+            : [...modifiers, mod];
+
+        setModifiers(newMods);
+        const newPrompt = compilePrompt(jobType, intent, newMods);
+        setEditingPrompt(newPrompt);
+    };
+
+    const handleManualRegen = () => {
+        // Create a temporary intent with the userChange injected into extraNote
+        const tempIntent = { ...intent, extraNote: userChange || intent.extraNote };
+        const newPrompt = compilePrompt(jobType, tempIntent, modifiers);
+        setEditingPrompt(newPrompt);
+    };
+
     const tamilMeaning = describePromptInTamil(jobType, intent);
+
+    const REFINE_BUTTONS = [
+        { id: 'more_traditional', icon: 'temple_hindu', label: t.more_traditional },
+        { id: 'change_colors', icon: 'palette', label: t.change_colors },
+        { id: 'lock_layout', icon: 'lock', label: t.lock_layout },
+        { id: 'more_festive', icon: 'celebration', label: t.more_festive }
+    ];
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-10 py-8">
@@ -31,7 +56,7 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
                     <div className="bg-white dark:bg-card-dark p-6 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-bold flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">terminal</span> {t.prompt_engine}
+                                <span className="material-symbols-outlined text-primary">terminal</span> Prompt Engine
                             </h3>
                             <button
                                 onClick={handleCopy}
@@ -49,6 +74,31 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
                         />
                     </div>
 
+                    {/* Extra Feedback Prompt */}
+                    <div className="bg-white dark:bg-card-dark p-6 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+                        <label className="text-sm font-bold flex items-center gap-2">
+                            <span className="material-symbols-outlined text-primary text-sm">edit_note</span>
+                            {t.extra_refinement}
+                        </label>
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                placeholder={t.refine_placeholder}
+                                className="flex-1 p-3 rounded-lg bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 text-sm outline-none focus:border-primary"
+                                value={userChange}
+                                onChange={(e) => setUserChange(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleManualRegen()}
+                            />
+                            <button
+                                onClick={handleManualRegen}
+                                className="px-6 py-3 bg-primary text-white rounded-lg font-bold text-xs flex items-center gap-2 hover:bg-primary/90 transition-all"
+                            >
+                                <span className="material-symbols-outlined text-sm">refresh</span>
+                                Regenerate
+                            </button>
+                        </div>
+                    </div>
+
                     <div className="flex gap-4">
                         <button onClick={onBack} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold hover:bg-slate-200 transition-all">
                             <span className="material-symbols-outlined">arrow_back</span> {t.back}
@@ -63,30 +113,29 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
                     <div className="bg-primary/5 p-6 rounded-2xl border border-primary/20">
                         <div className="flex justify-between items-center mb-3">
                             <h4 className="text-primary font-black text-sm uppercase tracking-tight">{t.prompt_tamil}</h4>
-                            <span className="material-symbols-outlined text-primary">translate</span>
+                            <span className="material-symbols-outlined text-primary text-lg">translate</span>
                         </div>
-                        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                        <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                             {tamilMeaning}
                         </p>
                     </div>
 
                     <div className="flex flex-col gap-4">
-                        <h4 className="text-xs font-bold uppercase text-slate-400 px-1">Designer Controls</h4>
+                        <h4 className="text-xs font-bold uppercase text-slate-400 px-1">Designer Quick Controls</h4>
                         <div className="grid grid-cols-2 gap-3">
-                            {[
-                                { icon: 'temple_hindu', label: t.more_traditional },
-                                { icon: 'palette', label: t.change_colors },
-                                { icon: 'lock', label: t.lock_layout },
-                                { icon: 'celebration', label: t.more_festive }
-                            ].map((btn, i) => (
-                                <button
-                                    key={i}
-                                    className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-primary/50 hover:shadow-lg transition-all"
-                                >
-                                    <span className="material-symbols-outlined text-primary">{btn.icon}</span>
-                                    <span className="text-[10px] font-black uppercase text-center">{btn.label}</span>
-                                </button>
-                            ))}
+                            {REFINE_BUTTONS.map((btn) => {
+                                const isActive = modifiers.includes(btn.id);
+                                return (
+                                    <button
+                                        key={btn.id}
+                                        onClick={() => handleRefine(btn.id)}
+                                        className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${isActive ? 'border-primary bg-primary/5 shadow-md shadow-primary/10' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 hover:border-primary/50'}`}
+                                    >
+                                        <span className={`material-symbols-outlined ${isActive ? 'text-primary' : 'text-slate-400'}`}>{btn.icon}</span>
+                                        <span className={`text-[10px] font-black uppercase text-center ${isActive ? 'text-primary' : 'text-slate-500'}`}>{btn.label}</span>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 

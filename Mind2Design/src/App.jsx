@@ -13,7 +13,7 @@ export default function App() {
     const [isTamil, setIsTamil] = useState(false);
 
     const [intent, setIntent] = useState({
-        occasion: 'diwali',
+        occasion: '',
         customOccasion: '',
         style: 'traditional',
         includePeople: false,
@@ -21,6 +21,9 @@ export default function App() {
         techWords: '',
         specificText: '',
         categoryAnswer: '',
+        symbol: 'none',
+        designMode: 'real',
+        extraNote: '',
         layout: 'center'
     });
 
@@ -39,6 +42,9 @@ export default function App() {
             techWords: '',
             specificText: '',
             categoryAnswer: '',
+            symbol: 'none',
+            designMode: 'real',
+            extraNote: '',
             layout: 'center'
         });
 
