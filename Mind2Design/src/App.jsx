@@ -13,7 +13,7 @@ export default function App() {
     const [step, setStep] = useState(1);
     const [isTamil, setIsTamil] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [apiKey, setApiKey] = useState(localStorage.getItem('openai_api_key') || '');
+
 
     const [intent, setIntent] = useState({
         occasion: '',
@@ -69,18 +69,12 @@ export default function App() {
     const handleGenerate = async () => {
         setIsGenerating(true);
         try {
-            let prompt = '';
-            if (apiKey) {
-                // Use the new ML-based prompt optimization
-                prompt = await synthesizePrompt(jobType, intent, apiKey);
-            } else {
-                // Fallback to template-based compiler if no key provided
-                prompt = compilePrompt(jobType, intent);
-            }
+            // Use the local Expert System Algorithm
+            const prompt = await synthesizePrompt(jobType, intent);
             setCompiledPrompt(prompt);
             setView('results');
         } catch (error) {
-            console.error("Generation failed:", error);
+            console.error("Synthesis failed:", error);
             // Fallback on error
             setCompiledPrompt(compilePrompt(jobType, intent));
             setView('results');
@@ -88,6 +82,7 @@ export default function App() {
             setIsGenerating(false);
         }
     };
+
 
     const handleBack = () => {
         if (view === 'results') setView('builder');
