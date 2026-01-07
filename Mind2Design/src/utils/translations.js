@@ -1,6 +1,6 @@
 export const translations = {
     en: {
-        title: "Design AI Prompt Generator",
+        title: "Mind2Design",
         home_headline: "What would you like to design today?",
         festival: "Festival Poster",
         crackers: "Crackers Box / Wrapper",
@@ -126,7 +126,7 @@ export const translations = {
         }
     },
     ta: {
-        title: "டிசைன் AI கட்டளை உருவாக்கி",
+        title: "Mind2Design",
         home_headline: "இன்று நீங்கள் எதை வடிவமைக்க விரும்பீர்கள்?",
         festival: "திருவிழா சுவரொட்டி",
         crackers: "பட்டாசு பெட்டி / உறை",

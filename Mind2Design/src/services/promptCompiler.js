@@ -90,7 +90,9 @@ export const compilePrompt = (jobType, intent, modifiers = []) => {
 
     // 5. Specific Line of Text
     if (intent.specificText) {
-        parts.push(`include the specific text: "${intent.specificText}" prominently in the design using elegant typography`);
+        const isTamilText = /[\u0B80-\u0BFF]/.test(intent.specificText);
+        const scriptNote = isTamilText ? "exactly in Tamil script" : "using elegant typography";
+        parts.push(`include the specific text: "${intent.specificText}" prominently in the design ${scriptNote}`);
     }
 
     // 6. People

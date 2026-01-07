@@ -6,9 +6,10 @@ import ResultsPanel from './components/ResultsPanel';
 import { compilePrompt } from './services/promptCompiler';
 import { synthesizePrompt } from './services/promptSynthesizer';
 import { translations } from './utils/translations';
+import LandingPage from './components/LandingPage';
 
 export default function App() {
-    const [view, setView] = useState('home'); // home, builder, results
+    const [view, setView] = useState('landing'); // landing, home, builder, results
     const [jobType, setJobType] = useState(null);
     const [step, setStep] = useState(1);
     const [isTamil, setIsTamil] = useState(false);
@@ -97,15 +98,24 @@ export default function App() {
     return (
         <div className="relative flex min-h-screen w-full flex-col bg-background-light text-slate-800 dark:bg-background-dark dark:text-slate-200 overflow-x-hidden transition-colors duration-300">
 
-            <Header
-                view={view}
-                setView={setView}
-                isTamil={isTamil}
-                setIsTamil={setIsTamil}
-            />
+            {view !== 'landing' && (
+                <Header
+                    view={view}
+                    setView={setView}
+                    isTamil={isTamil}
+                    setIsTamil={setIsTamil}
+                />
+            )}
 
-            <main className="flex-1 flex justify-center py-5">
-                <div className="w-full max-w-[960px] flex flex-col px-4">
+            <main className={`flex-1 flex justify-center ${view === 'landing' ? '' : 'py-5'}`}>
+                <div className={`${view === 'landing' ? 'w-full max-w-none px-0' : 'w-full max-w-[960px] px-4'} flex flex-col`}>
+
+                    {view === 'landing' && (
+                        <LandingPage
+                            onEnter={() => setView('home')}
+                            isTamil={isTamil}
+                        />
+                    )}
 
                     {view === 'home' && (
                         <JobSelector

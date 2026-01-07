@@ -27,8 +27,10 @@
     "@vitejs/plugin-react": "^5.1.2",
     "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",
+    "postprocessing": "^6.38.2",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "three": "^0.182.0"
   }
 }

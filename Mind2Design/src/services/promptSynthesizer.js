@@ -84,7 +84,11 @@ export const synthesizePrompt = async (jobType, intent) => {
 
     // 5. User Specific Controls
     if (intent.themeColor) parts.push(`dominant theme color: ${intent.themeColor}`);
-    if (intent.specificText) parts.push(`prominently feature the text "${intent.specificText}" in culturally appropriate decorative South Indian font`);
+    if (intent.specificText) {
+        const isTamilText = /[\u0B80-\u0BFF]/.test(intent.specificText);
+        const scriptInstruction = isTamilText ? "exactly in Tamil script" : "using elegant typography";
+        parts.push(`prominently feature the text "${intent.specificText}" ${scriptInstruction} in a culturally appropriate decorative South Indian font style`);
+    }
     if (intent.includePeople) parts.push("featuring people in traditional South Indian attire with authentic expressions");
     else parts.push("graphic-only composition, no human faces, focus on objects and typography");
 

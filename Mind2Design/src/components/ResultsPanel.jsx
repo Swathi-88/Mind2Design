@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { translations } from '../utils/translations';
 import { describePromptInTamil, compilePrompt } from '../services/promptCompiler';
+import { synthesizePrompt } from '../services/promptSynthesizer';
 
 export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt, onBack }) {
     const t = translations[isTamil ? 'ta' : 'en'];
@@ -9,6 +10,19 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
     const [modifiers, setModifiers] = useState([]);
     const [userChange, setUserChange] = useState('');
     const [showSuccess, setShowSuccess] = useState(true);
+    const [showColorPalette, setShowColorPalette] = useState(false);
+    const [isRegenerating, setIsRegenerating] = useState(false);
+
+    const DESIGNER_COLORS = [
+        { name: 'Royal Gold', hex: '#D4AF37' },
+        { name: 'Traditional Red', hex: '#C41E3A' },
+        { name: 'Turmeric Yellow', hex: '#FFC30B' },
+        { name: 'Emerald Green', hex: '#50C878' },
+        { name: 'Deep Saffron', hex: '#FF9933' },
+        { name: 'Peacock Blue', hex: '#00416A' },
+        { name: 'Silk Purple', hex: '#800080' },
+        { name: 'Pure White', hex: '#FFFFFF' }
+    ];
 
     useEffect(() => {
         const timer = setTimeout(() => setShowSuccess(false), 4000);
@@ -21,21 +35,41 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const handleRefine = (mod) => {
+    const handleRefine = async (mod) => {
+        if (mod === 'change_colors') {
+            setShowColorPalette(!showColorPalette);
+            return;
+        }
+
         const newMods = modifiers.includes(mod)
             ? modifiers.filter(m => m !== mod)
             : [...modifiers, mod];
 
         setModifiers(newMods);
-        const newPrompt = compilePrompt(jobType, intent, newMods);
+        setIsRegenerating(true);
+        // Use synthesis for high-quality refinement
+        const newPrompt = await synthesizePrompt(jobType, { ...intent, extraNote: mod });
         setEditingPrompt(newPrompt);
+        setIsRegenerating(false);
     };
 
-    const handleManualRegen = () => {
-        const tempIntent = { ...intent, extraNote: userChange || intent.extraNote };
-        const newPrompt = compilePrompt(jobType, tempIntent, modifiers);
+    const handleColorSelect = async (color) => {
+        setIsRegenerating(true);
+        const newIntent = { ...intent, themeColor: color.name };
+        const newPrompt = await synthesizePrompt(jobType, newIntent);
         setEditingPrompt(newPrompt);
         setShowSuccess(true);
+        setIsRegenerating(false);
+        setTimeout(() => setShowSuccess(false), 2000);
+    };
+
+    const handleManualRegen = async () => {
+        setIsRegenerating(true);
+        const tempIntent = { ...intent, extraNote: userChange || intent.extraNote };
+        const newPrompt = await synthesizePrompt(jobType, tempIntent);
+        setEditingPrompt(newPrompt);
+        setShowSuccess(true);
+        setIsRegenerating(false);
         setTimeout(() => setShowSuccess(false), 3000);
     };
 
@@ -73,7 +107,7 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
                     <div className="bg-white dark:bg-card-dark p-6 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-bold flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">terminal</span> Prompt Engine
+                                <span className="material-symbols-outlined text-primary">terminal</span> Mind2Design Engine
                             </h3>
                             <button
                                 onClick={handleCopy}
@@ -138,10 +172,10 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
                     </div>
 
                     <div className="flex flex-col gap-4">
-                        <h4 className="text-xs font-bold uppercase text-slate-400 px-1">Designer Quick Controls</h4>
+                        <h4 className="text-xs font-bold uppercase text-slate-400 px-1">Designer Quick Controls {isRegenerating && <span className="animate-pulse text-primary ml-2 italic">Refining...</span>}</h4>
                         <div className="grid grid-cols-2 gap-3">
                             {REFINE_BUTTONS.map((btn) => {
-                                const isActive = modifiers.includes(btn.id);
+                                const isActive = modifiers.includes(btn.id) || (btn.id === 'change_colors' && showColorPalette);
                                 return (
                                     <button
                                         key={btn.id}
@@ -154,7 +188,30 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
                                 );
                             })}
                         </div>
+
+                        {/* Interactive Color Palette */}
+                        {showColorPalette && (
+                            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-inner border border-primary/20 animate-in fade-in zoom-in-95 duration-300">
+                                <p className="text-[10px] font-bold uppercase text-primary mb-3">Choose Palette Color</p>
+                                <div className="grid grid-cols-4 gap-2">
+                                    {DESIGNER_COLORS.map((c) => (
+                                        <button
+                                            key={c.name}
+                                            onClick={() => handleColorSelect(c)}
+                                            className="group flex flex-col items-center gap-1"
+                                        >
+                                            <div
+                                                className={`size-10 rounded-full border-2 border-white shadow-sm transition-transform group-hover:scale-110 active:scale-95 ${intent.themeColor === c.name ? 'ring-2 ring-primary ring-offset-2' : ''}`}
+                                                style={{ backgroundColor: c.hex }}
+                                            />
+                                            <span className="text-[8px] text-slate-500 font-bold whitespace-nowrap">{c.name}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
+
 
                     <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
                         <p className="text-[11px] text-slate-500 italic">
