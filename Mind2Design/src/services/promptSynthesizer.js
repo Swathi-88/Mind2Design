@@ -23,6 +23,11 @@ const EXPERT_KNOWLEDGE = {
         hotel: "steaming hot food platters, traditional stainless steel service, authentic South Indian meal arrangement, warm inviting dining atmosphere",
         juice: "beaded water droplets on fresh glass, vibrant tropical fruits, splash of juice, refreshing and chilled aesthetic",
         funeral: "respectful floral wreaths, white lilies and jasmine, soft serene lighting, peaceful sacred atmosphere, muted elegant background"
+    },
+    religion: {
+        hindu: "sacred Hindu symbols like Om and Swastika, divine presence of Lord Ganesha or Lakshmi in the background, traditional temple oil lamps, auspicious saffron and turmeric accents",
+        muslim: "elegant Islamic motifs, crescent moon and star symbol, mosque silhouette in far background, intricate geometric patterns, green and gold decorative elements",
+        christian: "sacred Christian symbols like the Holy Cross, soft divine light from above, presence of Jesus Christ figure in a serene artistic style, white doves, elegant church architecture motifs"
     }
 };
 
@@ -56,6 +61,11 @@ export const synthesizePrompt = async (jobType, intent) => {
     // 2. Inject Subject & Niche
     const subject = intent.customOccasion || intent.occasion || intent.businessType || 'General';
     parts.push(`specifically for: ${subject}`);
+
+    // 2.5 Inject Religious Context
+    if (intent.religion && intent.religion !== 'secular') {
+        parts.push(EXPERT_KNOWLEDGE.religion[intent.religion]);
+    }
 
     // 3. Dynamic Motif Injection based on niche/category
     const niche = (subject + (intent.categoryAnswer || '')).toLowerCase();

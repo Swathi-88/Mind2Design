@@ -102,6 +102,31 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                     </div>
                 );
             case 3:
+                const religions = [
+                    { id: 'hindu', name: t.religion_hindu, icon: 'temple_hindu' },
+                    { id: 'muslim', name: t.religion_muslim, icon: 'mosque' },
+                    { id: 'christian', name: t.religion_christian, icon: 'church' },
+                    { id: 'secular', name: t.religion_secular, icon: 'public' }
+                ];
+
+                return (
+                    <div className="flex flex-col gap-6">
+                        <h2 className="text-xl font-bold">{t.choose_religion}</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {religions.map((r) => (
+                                <div
+                                    key={r.id}
+                                    onClick={() => setIntent({ ...intent, religion: r.id })}
+                                    className={`cursor-pointer flex items-center gap-4 p-4 rounded-lg border-2 transition-all ${intent.religion === r.id ? 'border-primary bg-primary/5' : 'border-transparent bg-slate-50 dark:bg-white/5'}`}
+                                >
+                                    <span className="material-symbols-outlined text-primary">{r.icon}</span>
+                                    <span className="font-bold text-sm">{r.name}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            case 4:
                 const categoryKey = jobType?.id;
 
                 // Dynamic Questions based on Category and Search
@@ -274,7 +299,7 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-4 py-8">
             <div className="flex flex-col gap-2 text-center">
-                <p className="text-sm uppercase font-bold text-primary tracking-widest">{t.step} {step} {t.of} 3</p>
+                <p className="text-sm uppercase font-bold text-primary tracking-widest">{t.step} {step} {t.of} 4</p>
                 <h2 className="text-3xl font-black">{isTamil ? jobType?.title_ta : jobType?.title_en}</h2>
             </div>
 
@@ -285,10 +310,10 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
             <div className="flex justify-between gap-4">
                 <button onClick={onBack} className="flex-1 max-w-[150px] py-4 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold transition-all hover:bg-slate-200">{t.back}</button>
                 <button
-                    onClick={step === 3 ? onGenerate : () => setStep(step + 1)}
+                    onClick={step === 4 ? onGenerate : () => setStep(step + 1)}
                     className="flex-1 max-w-[200px] py-4 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 transition-all hover:translate-y-[-2px]"
                 >
-                    {step === 3 ? t.generate : t.continue}
+                    {step === 4 ? t.generate : t.continue}
                 </button>
             </div>
         </div>

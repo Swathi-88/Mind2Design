@@ -29,7 +29,8 @@ export default function App() {
         extraNote: '',
         businessType: '',
         useReferenceImage: false,
-        layout: 'center'
+        layout: 'center',
+        religion: 'secular'
     });
 
     const [compiledPrompt, setCompiledPrompt] = useState('');
@@ -52,7 +53,8 @@ export default function App() {
             extraNote: '',
             businessType: '',
             useReferenceImage: false,
-            layout: 'center'
+            layout: 'center',
+            religion: 'secular'
         });
 
         // Inject localized titles into the job object for sub-components
