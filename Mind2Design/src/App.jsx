@@ -4,6 +4,7 @@ import JobSelector from './components/JobSelector';
 import IntentBuilder from './components/IntentBuilder';
 import ResultsPanel from './components/ResultsPanel';
 import { compilePrompt } from './services/promptCompiler';
+import { synthesizePrompt } from './services/promptSynthesizer';
 import { translations } from './utils/translations';
 
 export default function App() {
@@ -11,6 +12,8 @@ export default function App() {
     const [jobType, setJobType] = useState(null);
     const [step, setStep] = useState(1);
     const [isTamil, setIsTamil] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [apiKey, setApiKey] = useState(localStorage.getItem('openai_api_key') || '');
 
     const [intent, setIntent] = useState({
         occasion: '',
@@ -24,6 +27,8 @@ export default function App() {
         symbol: 'none',
         designMode: 'real',
         extraNote: '',
+        businessType: '',
+        useReferenceImage: false,
         layout: 'center'
     });
 
@@ -45,6 +50,8 @@ export default function App() {
             symbol: 'none',
             designMode: 'real',
             extraNote: '',
+            businessType: '',
+            useReferenceImage: false,
             layout: 'center'
         });
 
@@ -59,10 +66,27 @@ export default function App() {
         setView('builder');
     };
 
-    const handleGenerate = () => {
-        const prompt = compilePrompt(jobType, intent);
-        setCompiledPrompt(prompt);
-        setView('results');
+    const handleGenerate = async () => {
+        setIsGenerating(true);
+        try {
+            let prompt = '';
+            if (apiKey) {
+                // Use the new ML-based prompt optimization
+                prompt = await synthesizePrompt(jobType, intent, apiKey);
+            } else {
+                // Fallback to template-based compiler if no key provided
+                prompt = compilePrompt(jobType, intent);
+            }
+            setCompiledPrompt(prompt);
+            setView('results');
+        } catch (error) {
+            console.error("Generation failed:", error);
+            // Fallback on error
+            setCompiledPrompt(compilePrompt(jobType, intent));
+            setView('results');
+        } finally {
+            setIsGenerating(false);
+        }
     };
 
     const handleBack = () => {
@@ -103,8 +127,20 @@ export default function App() {
                             setStep={setStep}
                             onGenerate={handleGenerate}
                             onBack={handleBack}
+                            isGenerating={isGenerating}
                         />
                     )}
+
+                    {isGenerating && (
+                        <div className="fixed inset-0 bg-white/80 dark:bg-background-dark/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center gap-4">
+                            <div className="size-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                            <div className="flex flex-col items-center gap-1">
+                                <h3 className="text-xl font-bold animate-pulse text-primary">{isTamil ? 'வடிவமைப்பை உருவாக்குகிறது...' : 'Optimizing Prompt...'}</h3>
+                                <p className="text-sm text-slate-500">{isTamil ? 'தயவுசெய்து காத்திருக்கவும்' : 'AI is thinking about your South Indian design'}</p>
+                            </div>
+                        </div>
+                    )}
+
 
                     {view === 'results' && (
                         <ResultsPanel

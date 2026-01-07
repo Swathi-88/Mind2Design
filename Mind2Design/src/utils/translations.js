@@ -60,22 +60,69 @@ export const translations = {
         less_decoration: "Less Decoration",
         more_festive: "More Festive",
         built_for: "Built for Indian Designers.",
+        reference_image: "Include Reference Image Text?",
+        ref_img_desc: "Check this if you plan to upload/attach an image as a guide.",
+        success_msg: "Prompt generated successfully!",
+        business_type_label: "Type of Business (e.g. Hotel, Retail, Studio)",
+        business_type_placeholder: "Enter niche for smart questions",
         questions: {
             crackers: "Placement of Safety Text?",
             funeral: "Vase or Flower decorations?",
             festival: "Traditional lighting (Diya) density?",
-            business: "Main objective: Sales or Branding?"
+            business: "Main objective: Sales or Branding?",
+            business_hotel: "What to add: Menu, Photo, or Special Dish?",
+            business_juice: "Show fresh fruits or prepared drink?",
+            business_printing: "Design for: Flex Banner, Visiting Card, or Pamphlet?",
+            business_retail: "Show product shelf or discount tags?",
+            business_studio: "Focus on equipment or final work portrait?",
+            festival_pongal: "Include: Sugarcane, Pot, or Bull (Jallikattu)?",
+            festival_diwali: "Intensity of crackers and lights?",
+            funeral_memorial: "Include: Photo Frame, Respectful Border, or Candles?"
         },
         choices: {
             crackers: ["Bottom & Sides", "Back only", "None"],
             funeral: ["Minimal Flowers", "Heavy Floral Border", "No Flowers"],
             festival: ["Low (Atmospheric)", "High (Very bright)", "No Lamps"],
-            business: ["Sales Focused", "Brand Identity", "Minimalistic Info"]
+            business: ["Sales Focused", "Brand Identity", "Minimalistic Info"],
+            business_hotel: ["Full Menu", "Hotel Photo", "Today's Special"],
+            business_juice: ["Fresh Fruits", "Juice Glass", "Mixed Combo"],
+            business_printing: ["Flex Banner", "Visiting Card", "Pamphlet"],
+            business_retail: ["Product Close-up", "Busy Store Layout", "Sales Banners"],
+            business_studio: ["Professional Setup", "Action Shot", "Gallery Style"],
+            festival_pongal: ["Sugarcane & Pot", "Jallikattu Bull", "Village Scene"],
+            festival_diwali: ["Grand Crackers", "Diyas Only", "Family Celebration"],
+            funeral_memorial: ["Photo Frame", "Floral Wall", "Simple Border"]
+        },
+        styles: {
+            festival: [
+                { id: 'traditional', name: 'Traditional', icon: 'temple_hindu' },
+                { id: 'festive_pop', name: 'Festive Pop', icon: 'auto_awesome' },
+                { id: 'realistic', name: 'Hyper Realistic', icon: 'photo_camera' },
+                { id: 'cartoon', name: 'Cartoon Fun', icon: 'smart_toy' }
+            ],
+            crackers: [
+                { id: 'explosive', name: 'Explosive Graphics', icon: 'flare' },
+                { id: 'shiny_foil', name: 'Shiny Foil Style', icon: 'diamond' },
+                { id: 'vintage', name: 'Vintage Firework', icon: 'history' },
+                { id: 'minimal_box', name: 'Minimal Box', icon: 'inventory' }
+            ],
+            business: [
+                { id: 'local_shop', name: 'Local Shop Style', icon: 'storefront' },
+                { id: 'corporate', name: 'Corporate/Clean', icon: 'business_center' },
+                { id: 'ecommerce', name: 'E-commerce Bold', icon: 'shopping_bag' },
+                { id: 'luxury_brand', name: 'Luxury Brand', icon: 'star' }
+            ],
+            funeral: [
+                { id: 'serene', name: 'Serene/White', icon: 'wb_sunny' },
+                { id: 'classic_black', name: 'Classic Black/Gold', icon: 'togo' },
+                { id: 'floral_ethereal', name: 'Floral Ethereal', icon: 'local_florist' },
+                { id: 'peaceful', name: 'Peaceful Nature', icon: 'forest' }
+            ]
         }
     },
     ta: {
         title: "டிசைன் AI கட்டளை உருவாக்கி",
-        home_headline: "இன்று நீங்கள் எதை வடிவமைக்க விரும்புகிறீர்கள்?",
+        home_headline: "இன்று நீங்கள் எதை வடிவமைக்க விரும்பீர்கள்?",
         festival: "திருவிழா சுவரொட்டி",
         crackers: "பட்டாசு பெட்டி / உறை",
         funeral: "இரங்கல் சுவரொட்டி",
@@ -87,7 +134,7 @@ export const translations = {
         desc_funeral: "நினைவுச் சேவைகளுக்கு மரியாதைக்குரிய மற்றும் அமைதியான சுவரொட்டிகளை உருவாக்குங்கள்.",
         desc_business: "உங்கள் கடை அல்லது சேவைகளைத் தொழில்முறைச் சுவரொட்டியுடன் விளம்பரப்படுத்துங்கள்.",
         desc_event: "கச்சேரிகள், கூட்டங்கள் அல்லது சமூகக் கூடல்களை அறிவிக்கவும்.",
-        desc_custom: "ஆரம்பத்தில் இருந்து தொடங்குங்கள் அல்லது ஒரு தனித்துவமான படைப்புக்கு உத்வேகம் பெறுங்கள்.",
+        desc_custom: "ஆரம்பத்திலிருந்து தொடங்கவும் அல்லது ஒரு தனித்துவமான படைப்புக்கு உத்வேகம் பெறவும்.",
         back: "பின்செல்",
         next: "அடுத்து",
         continue: "தொடரவும்",
@@ -134,17 +181,64 @@ export const translations = {
         less_decoration: "குறைவான அலங்காரம்",
         more_festive: "கூடுதல் கொண்டாட்டம்",
         built_for: "இந்திய வடிவமைப்பாளர்களுக்காக உருவாக்கப்பட்டது.",
+        reference_image: "குறிப்புப் படத்தை சேர்க்கவா?",
+        ref_img_desc: "நீங்கள் ஒரு படத்தை வழிகாட்டியாகப் பயன்படுத்த விரும்பினால் இதைத் தேர்ந்தெடுக்கவும்.",
+        success_msg: "கட்டளை வெற்றிகரமாக உருவாக்கப்பட்டது!",
+        business_type_label: "வணிக வகை (உதாரணமாக: ஹோட்டல், ஜூஸ் கடை, பிரிண்டிங்)",
+        business_type_placeholder: "துல்லியமான கேள்விகளுக்கு வணிக வகையை உள்ளிடவும்",
         questions: {
             crackers: "பாதுகாப்பு வாசகம் எங்கே இருக்க வேண்டும்?",
             funeral: "பூக்கள் அல்லது மலர் அலங்காரம்?",
             festival: "தீப விளக்குகளின் அளவு?",
-            business: "முக்கிய நோக்கம்: விற்பனை அல்லது பிராண்டிங்?"
+            business: "முக்கிய நோக்கம்: விற்பனை அல்லது பிராண்டிங்?",
+            business_hotel: "விருப்பம்: மெனு, புகைப்படம், அல்லது சிறப்பு உணவு?",
+            business_juice: "பழங்கள் அல்லது தயாரிக்கப்பட்ட ஜூஸ் காட்ட வேண்டுமா?",
+            business_printing: "வடிவமைப்பு: பிளக்ஸ் பேனர், விசிட்டிங் கார்டு, அல்லது துண்டு பிரசுரம்?",
+            business_retail: "தயாரிப்பு அடுக்ககம் அல்லது தள்ளுபடி குறிச்சொற்கள்?",
+            business_studio: "கருவிகள் அல்லது இறுதி வேலைப்பாடு?",
+            festival_pongal: "சேர்க்க வேண்டியவை: கரும்பு, பானை, அல்லது காளை (ஜல்லிக்கட்டு)?",
+            festival_diwali: "பட்டாசுகள் மற்றும் விளக்குகளின் அளவு?",
+            funeral_memorial: "சேர்க்க வேண்டியவை: புகைப்பட சட்டகம், மரியாதைக்குரிய பார்டர், அல்லது மெழுகுவர்த்திகள்?"
         },
         choices: {
             crackers: ["கீழ் மற்றும் பக்கவாட்டில்", "பின்பக்கம் மட்டும்", "தேவையில்லை"],
             funeral: ["குறைவான பூக்கள்", "அதிக மலர் பார்டர்", "பூக்கள் வேண்டாம்"],
             festival: ["குறைவாக (அமைதியான)", "அதிகமாக (பிரகாசமான)", "விளக்குகள் வேண்டாம்"],
-            business: ["விற்பனை சார்ந்தது", "பிராண்ட் அடையாளம்", "குறைந்தபட்ச தகவல்"]
+            business: ["விற்பனை சார்ந்தது", "பிராண்ட் அடையாளம்", "குறைந்தபட்ச தகவல்"],
+            business_hotel: ["முழு மெனு", "ஹோட்டல் புகைப்படம்", "இன்றைய சிறப்பு"],
+            business_juice: ["புதிய பழங்கள்", "ஜூஸ் கிளாஸ்", "கலவை ஜூஸ்"],
+            business_printing: ["பிளக்ஸ் பேனர்", "விசிட்டிங் கார்டு", "துண்டு பிரசுரம்"],
+            business_retail: ["தயாரிப்பு நெருக்கமான காட்சி", "கடை அமைப்பு", "விற்பனை பேனர்கள்"],
+            business_studio: ["தொழில்முறை அமைப்பு", "செயல்பாட்டு காட்சி", "கேலரி பாணி"],
+            festival_pongal: ["கரும்பு மற்றும் பானை", "ஜல்லிக்கட்டு காளை", "கிராமப்புற காட்சி"],
+            festival_diwali: ["பிரம்மாண்ட பட்டாசுகள்", "தீபங்கள் மட்டும்", "குடும்ப கொண்டாட்டம்"],
+            funeral_memorial: ["புகைப்பட சட்டகம்", "மலர் சுவர்", "எளிமையான பார்டர்"]
+        },
+        styles: {
+            festival: [
+                { id: 'traditional', name: 'பாரம்பரியம்', icon: 'temple_hindu' },
+                { id: 'festive_pop', name: 'துடிப்பான கொண்டாட்டம்', icon: 'auto_awesome' },
+                { id: 'realistic', name: 'தத்ரூபமான புகைப்படம்', icon: 'photo_camera' },
+                { id: 'cartoon', name: 'கார்ட்டூன்', icon: 'smart_toy' }
+            ],
+            crackers: [
+                { id: 'explosive', name: 'வெடிக்கும் கிராபிக்ஸ்', icon: 'flare' },
+                { id: 'shiny_foil', name: 'பளபளப்பான உறை', icon: 'diamond' },
+                { id: 'vintage', name: 'பழைய கால ஸ்டைல்', icon: 'history' },
+                { id: 'minimal_box', name: 'எளிமையான பெட்டி', icon: 'inventory' }
+            ],
+            business: [
+                { id: 'local_shop', name: 'உள்ளூர் கடை ஸ்டைல்', icon: 'storefront' },
+                { id: 'corporate', name: 'தொழில்முறை/சுத்தம்', icon: 'business_center' },
+                { id: 'ecommerce', name: 'இ-காமர்ஸ் போல்ட்', icon: 'shopping_bag' },
+                { id: 'luxury_brand', name: 'ஆடம்பர பிராண்ட்', icon: 'star' }
+            ],
+            funeral: [
+                { id: 'serene', name: 'அமைதியான வெள்ளை', icon: 'wb_sunny' },
+                { id: 'classic_black', name: 'கருப்பு/தங்கம்', icon: 'togo' },
+                { id: 'floral_ethereal', name: 'மலர் அலங்காரம்', icon: 'local_florist' },
+                { id: 'peaceful', name: 'இயற்கை அமைதி', icon: 'forest' }
+            ]
         }
     }
 };

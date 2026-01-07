@@ -16,6 +16,19 @@ export default function Header({ view, setView, isTamil, setIsTamil }) {
                 <h2 className="text-lg font-bold tracking-tight">{t.title}</h2>
             </div>
             <div className="flex flex-1 justify-end items-center gap-4">
+                <div className="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-white/5 p-1 rounded-lg">
+                    <span className="material-symbols-outlined text-sm ml-2 text-slate-400">key</span>
+                    <input
+                        type="password"
+                        placeholder="OpenAI API Key"
+                        className="bg-transparent text-xs outline-none w-32 focus:w-48 transition-all px-2"
+                        value={localStorage.getItem('openai_api_key') || ''}
+                        onChange={(e) => {
+                            localStorage.setItem('openai_api_key', e.target.value);
+                            window.location.reload(); // Quick way to refresh App state
+                        }}
+                    />
+                </div>
                 <div className="flex gap-2">
                     <button
                         onClick={() => setIsTamil(!isTamil)}
@@ -28,6 +41,7 @@ export default function Header({ view, setView, isTamil, setIsTamil }) {
                     </button>
                 </div>
             </div>
+
         </header>
     );
 }

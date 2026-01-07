@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { translations } from '../utils/translations';
 import { describePromptInTamil, compilePrompt } from '../services/promptCompiler';
 
@@ -8,6 +8,12 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
     const [copied, setCopied] = useState(false);
     const [modifiers, setModifiers] = useState([]);
     const [userChange, setUserChange] = useState('');
+    const [showSuccess, setShowSuccess] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setShowSuccess(false), 4000);
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(editingPrompt);
@@ -26,10 +32,11 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
     };
 
     const handleManualRegen = () => {
-        // Create a temporary intent with the userChange injected into extraNote
         const tempIntent = { ...intent, extraNote: userChange || intent.extraNote };
         const newPrompt = compilePrompt(jobType, tempIntent, modifiers);
         setEditingPrompt(newPrompt);
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 3000);
     };
 
     const tamilMeaning = describePromptInTamil(jobType, intent);
@@ -42,7 +49,17 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
     ];
 
     return (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-10 py-8">
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-10 py-8 relative">
+
+            {/* Success Notification */}
+            {showSuccess && (
+                <div className="fixed top-10 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-10 duration-500">
+                    <div className="bg-green-500 text-white px-8 py-3 rounded-full shadow-2xl flex items-center gap-3 font-bold border-4 border-white/20">
+                        <span className="material-symbols-outlined">check_circle</span>
+                        {t.success_msg}
+                    </div>
+                </div>
+            )}
 
             <div className="flex flex-col gap-2 text-center">
                 <h2 className="text-4xl font-black">{t.results_title}</h2>

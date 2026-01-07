@@ -4,12 +4,12 @@ import { translations } from '../utils/translations';
 const CATEGORY_OPTIONS = {
     festival: [
         { id: 'diwali', name_en: 'Diwali', name_ta: 'தீபாவளி', icon: 'celebration', color: 'orange-500' },
-        { id: 'holi', name_en: 'Holi', name_ta: 'ஹோலி', icon: 'format_paint', color: 'primary' },
-        { id: 'eid', name_en: 'Eid', name_ta: 'ஈத்', icon: 'nightlight', color: 'emerald-600' },
-        { id: 'navratri', name_en: 'Navratri', name_ta: 'நவராத்திரி', icon: 'music_note', color: 'blue-600' },
+        { id: 'pongal', name_en: 'Pongal', name_ta: 'பொங்கல்', icon: 'local_florist', color: 'yellow-500' },
+        { id: 'onam', name_en: 'Onam', name_ta: 'ஓணம்', icon: 'filter_vintage', color: 'green-600' },
+        { id: 'ugadi', name_en: 'Ugadi', name_ta: 'உகாதி', icon: 'yard', color: 'emerald-500' },
+        { id: 'vishu', name_en: 'Vishu', name_ta: 'விஷு', icon: 'spa', color: 'yellow-600' },
         { id: 'republic', name_en: 'Republic Day', name_ta: 'குடியரசு தினம்', icon: 'trip_origin', color: 'orange-600' },
-        { id: 'onam', name_en: 'Onam', name_ta: 'ஓணம்', icon: 'local_florist', color: 'green-600' },
-        { id: 'raksha', name_en: 'Raksha Bandhan', name_ta: 'ரக்ஷா பந்தன்', icon: 'family_restroom', color: 'pink-600' },
+        { id: 'navratri', name_en: 'Navratri', name_ta: 'நவராத்திரி', icon: 'music_note', color: 'blue-600' },
         { id: 'christmas', name_en: 'Christmas', name_ta: 'கிறிஸ்துமஸ்', icon: 'cake', color: 'red-600' }
     ],
     crackers: [
@@ -29,8 +29,10 @@ const CATEGORY_OPTIONS = {
     business: [
         { id: 'opening', name_en: 'Shop Opening', name_ta: 'கடை திறப்பு விழா', icon: 'storefront', color: 'blue-600' },
         { id: 'offer', name_en: 'Discount Offer', name_ta: 'தள்ளுபடி சலுகை', icon: 'sell', color: 'red-500' },
-        { id: 'new_arrival', name_en: 'New Arrival', name_ta: 'புதிய வரவு', icon: 'new_releases', color: 'emerald-600' },
-        { id: 'menu', name_en: 'Service Menu', name_ta: 'சேவை விவரம்', icon: 'list_alt', color: 'slate-800' }
+        { id: 'juice', name_en: 'Juice Shop', name_ta: 'ஜூஸ் கடை', icon: 'local_bar', color: 'orange-400' },
+        { id: 'printing', name_en: 'Printing Shop', name_ta: 'பிரிண்டிங் கடை', icon: 'print', color: 'emerald-600' },
+        { id: 'fireworks', name_en: 'Fireworks Shop', name_ta: 'பட்டாசு கடை', icon: 'flare', color: 'red-600' },
+        { id: 'hotel', name_en: 'Hotel/Food', name_ta: 'ஹோட்டல்', icon: 'restaurant', color: 'orange-500' }
     ],
     event: [
         { id: 'political', name_en: 'Political Meeting', name_ta: 'அரசியல் கூட்டம்', icon: 'groups', color: 'orange-700' },
@@ -40,12 +42,6 @@ const CATEGORY_OPTIONS = {
     ]
 };
 
-const STYLES = [
-    { id: 'traditional', name_en: 'Traditional', name_ta: 'பாரம்பரியம்', icon: 'temple_hindu', desc: 'Classic Indian' },
-    { id: 'modern', name_en: 'Modern', name_ta: 'நவீனமானது', icon: 'bolt', desc: 'Sleek' },
-    { id: 'cartoon', name_en: 'Cartoon', name_ta: 'கார்ட்டூன்', icon: 'smart_toy', desc: 'Playful' },
-    { id: 'luxury', name_en: 'Luxury', name_ta: 'ஆடம்பரம்', icon: 'diamond', desc: 'Premium' }
-];
 
 export default function IntentBuilder({ isTamil, jobType, intent, setIntent, step, setStep, onGenerate, onBack }) {
     const t = translations[isTamil ? 'ta' : 'en'];
@@ -85,18 +81,21 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                     </div>
                 );
             case 2:
+                // Category-specific styles from translations
+                const categoryStyles = t.styles[jobId] || t.styles.festival;
+
                 return (
                     <div className="flex flex-col gap-6">
                         <h2 className="text-xl font-bold">{t.choose_style}</h2>
                         <div className="grid grid-cols-2 gap-4">
-                            {STYLES.map((s) => (
+                            {categoryStyles.map((s) => (
                                 <div
                                     key={s.id}
                                     onClick={() => setIntent({ ...intent, style: s.id })}
                                     className={`cursor-pointer flex items-center gap-4 p-4 rounded-lg border-2 transition-all ${intent.style === s.id ? 'border-primary bg-primary/5' : 'border-transparent bg-slate-50 dark:bg-white/5'}`}
                                 >
                                     <span className="material-symbols-outlined text-primary">{s.icon}</span>
-                                    <span className="font-bold">{isTamil ? s.name_ta : s.name_en}</span>
+                                    <span className="font-bold">{s.name}</span>
                                 </div>
                             ))}
                         </div>
@@ -104,23 +103,55 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                 );
             case 3:
                 const categoryKey = jobType?.id;
-                const categoryQuestion = t.questions[categoryKey];
-                const categoryChoices = t.choices[categoryKey];
+
+                // Dynamic Questions based on Category and Search
+                let activeQuestionKey = categoryKey;
+
+                // 1. Business Specific Search
+                if (categoryKey === 'business' && (intent.businessType || intent.customOccasion || intent.occasion)) {
+                    const type = (intent.businessType || intent.customOccasion || intent.occasion || '').toLowerCase();
+                    if (type.includes('hotel') || type.includes('restaurant')) activeQuestionKey = 'business_hotel';
+                    else if (type.includes('juice') || type.includes('shake')) activeQuestionKey = 'business_juice';
+                    else if (type.includes('print') || type.includes('banner') || type.includes('vcard')) activeQuestionKey = 'business_printing';
+                    else if (type.includes('retail') || type.includes('shop')) activeQuestionKey = 'business_retail';
+                    else if (type.includes('studio') || type.includes('photo')) activeQuestionKey = 'business_studio';
+                }
+
+                // 2. Festival Specific Search
+                if (categoryKey === 'festival') {
+                    const fest = (intent.customOccasion || intent.occasion || '').toLowerCase();
+                    if (fest.includes('pongal')) activeQuestionKey = 'festival_pongal';
+                    else if (fest.includes('diwali')) activeQuestionKey = 'festival_diwali';
+                }
+
+                // 3. Funeral Specific Search
+                if (categoryKey === 'funeral') {
+                    activeQuestionKey = 'funeral_memorial';
+                }
+
+
+                const categoryQuestion = t.questions[activeQuestionKey];
+                const categoryChoices = t.choices[activeQuestionKey];
 
                 return (
                     <div className="flex flex-col gap-8">
                         <h2 className="text-xl font-bold">{t.mood_layout}</h2>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                            {/* Specific Line of Text */}
+                            {/* Specific Line of Text / Business Name */}
                             <div className="flex flex-col gap-4">
-                                <label className="text-sm font-bold">{t.specific_line}</label>
+                                <label className="text-sm font-bold">
+                                    {categoryKey === 'business' ? t.business_type_label : t.specific_line}
+                                </label>
                                 <input
                                     type="text"
-                                    placeholder={t.line_desc}
+                                    placeholder={categoryKey === 'business' ? t.business_type_placeholder : t.line_desc}
                                     className="p-3 rounded-lg bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-800"
-                                    value={intent.specificText || ''}
-                                    onChange={(e) => setIntent({ ...intent, specificText: e.target.value })}
+                                    value={categoryKey === 'business' ? intent.businessType : intent.specificText}
+                                    onChange={(e) => {
+                                        if (categoryKey === 'business') setIntent({ ...intent, businessType: e.target.value });
+                                        else setIntent({ ...intent, specificText: e.target.value });
+                                    }}
                                 />
                             </div>
 
@@ -139,8 +170,11 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
 
                         {/* Category Specific Questions */}
                         {categoryQuestion && (
-                            <div className="flex flex-col gap-4 p-4 bg-primary/5 rounded-xl border border-primary/10">
-                                <label className="text-sm font-bold text-primary">{categoryQuestion}</label>
+                            <div className="flex flex-col gap-4 p-4 bg-primary/5 rounded-xl border border-primary/10 animate-in fade-in zoom-in-95 duration-300">
+                                <label className="text-sm font-bold text-primary flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-sm">quiz</span>
+                                    {categoryQuestion}
+                                </label>
                                 <div className="flex gap-2 flex-wrap">
                                     {categoryChoices.map((choice) => (
                                         <button
@@ -156,7 +190,7 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                         )}
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                            {/* Design Mode: AI vs Real */}
+                            {/* Layout Logic Toggle */}
                             <div className="flex flex-col gap-4">
                                 <label className="text-sm font-bold">{t.design_mode}</label>
                                 <div className="flex gap-4">
@@ -175,19 +209,17 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                 </div>
                             </div>
 
-                            {/* Symbol Selection */}
+                            {/* Reference Image Option */}
                             <div className="flex flex-col gap-4">
-                                <label className="text-sm font-bold">{t.symbol_select}</label>
-                                <select
-                                    className="p-3 rounded-lg bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-800 text-sm font-bold outline-none"
-                                    value={intent.symbol}
-                                    onChange={(e) => setIntent({ ...intent, symbol: e.target.value })}
+                                <label className="text-sm font-bold">{t.reference_image}</label>
+                                <button
+                                    onClick={() => setIntent({ ...intent, useReferenceImage: !intent.useReferenceImage })}
+                                    className={`flex items-center gap-4 p-3 rounded-lg border-2 transition-all ${intent.useReferenceImage ? 'border-primary bg-primary/5 text-primary' : 'border-slate-100 bg-slate-50 dark:bg-white/5 text-slate-400'}`}
                                 >
-                                    <option value="none">{t.symbol_none}</option>
-                                    <option value="hindu">{t.symbol_hindu}</option>
-                                    <option value="muslim">{t.symbol_muslim}</option>
-                                    <option value="christian">{t.symbol_christian}</option>
-                                </select>
+                                    <span className="material-symbols-outlined">{intent.useReferenceImage ? 'image_search' : 'add_photo_alternate'}</span>
+                                    <span className="text-xs font-bold uppercase">{intent.useReferenceImage ? 'Reference Logic ON' : 'Click to enable ref'}</span>
+                                </button>
+                                <p className="text-[10px] text-slate-400 italic leading-tight">{t.ref_img_desc}</p>
                             </div>
                         </div>
 
@@ -240,7 +272,7 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
     };
 
     return (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-8 py-8">
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-4 py-8">
             <div className="flex flex-col gap-2 text-center">
                 <p className="text-sm uppercase font-bold text-primary tracking-widest">{t.step} {step} {t.of} 3</p>
                 <h2 className="text-3xl font-black">{isTamil ? jobType?.title_ta : jobType?.title_en}</h2>
