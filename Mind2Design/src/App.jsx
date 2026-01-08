@@ -31,7 +31,9 @@ export default function App() {
         businessType: '',
         useReferenceImage: false,
         layout: 'center',
-        religion: 'secular'
+        religion: 'secular',
+        aspectRatio: '1:1',
+        customSize: ''
     });
 
     const [compiledPrompt, setCompiledPrompt] = useState('');
@@ -55,7 +57,9 @@ export default function App() {
             businessType: '',
             useReferenceImage: false,
             layout: 'center',
-            religion: 'secular'
+            religion: 'secular',
+            aspectRatio: '1:1',
+            customSize: ''
         });
 
         // Inject localized titles into the job object for sub-components

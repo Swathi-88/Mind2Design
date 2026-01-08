@@ -97,9 +97,9 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
                 </div>
             )}
 
-            <div className="flex flex-col gap-2 text-center">
-                <h2 className="text-4xl font-black">{t.results_title}</h2>
-                <p className="text-slate-500">{t.results_desc}</p>
+            <div className="flex flex-col gap-2 text-center px-4">
+                <h2 className="text-2xl sm:text-4xl font-black">{t.results_title}</h2>
+                <p className="text-xs sm:text-base text-slate-500">{t.results_desc}</p>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-10">
@@ -133,7 +133,7 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
                             <span className="material-symbols-outlined text-primary text-sm">edit_note</span>
                             {t.extra_refinement}
                         </label>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 type="text"
                                 placeholder={t.refine_placeholder}
@@ -144,10 +144,10 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
                             />
                             <button
                                 onClick={handleManualRegen}
-                                className="px-6 py-3 bg-primary text-white rounded-lg font-bold text-xs flex items-center gap-2 hover:bg-primary/90 transition-all"
+                                className="px-6 py-3 bg-primary text-white rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-primary/90 transition-all"
                             >
                                 <span className="material-symbols-outlined text-sm">refresh</span>
-                                Regenerate
+                                {t.edit_prompt?.includes('Change') ? 'Apply' : 'Regenerate'}
                             </button>
                         </div>
                     </div>

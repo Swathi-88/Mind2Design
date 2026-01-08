@@ -127,12 +127,44 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                     </div>
                 );
             case 4:
+                const sizes = [
+                    { id: '1:1', label: t.size_square, icon: 'square' },
+                    { id: '4:5', label: t.size_portrait, icon: 'portrait' },
+                    { id: '16:9', label: t.size_landscape, icon: 'crop_16_9' },
+                    { id: '9:16', label: t.size_story, icon: 'stay_current_portrait' },
+                    { id: '2:1', label: t.size_banner, icon: 'rectangle' }
+                ];
+
+                return (
+                    <div className="flex flex-col gap-6">
+                        <h2 className="text-xl font-bold">{t.design_size}</h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            {sizes.map((s) => (
+                                <div
+                                    key={s.id}
+                                    onClick={() => setIntent({ ...intent, aspectRatio: s.id, customSize: '' })}
+                                    className={`cursor-pointer flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${(!intent.customSize && intent.aspectRatio === s.id) ? 'border-primary bg-primary/5' : 'border-transparent bg-slate-50 dark:bg-white/5'}`}
+                                >
+                                    <span className="material-symbols-outlined text-primary">{s.icon}</span>
+                                    <span className="font-bold text-xs">{s.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex flex-col gap-2 mt-4">
+                            <label className="text-sm font-bold">{t.custom_size}</label>
+                            <input
+                                type="text"
+                                placeholder={t.custom_size}
+                                className="p-3 rounded-lg bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-800"
+                                value={intent.customSize || ''}
+                                onChange={(e) => setIntent({ ...intent, customSize: e.target.value })}
+                            />
+                        </div>
+                    </div>
+                );
+            case 5:
                 const categoryKey = jobType?.id;
-
-                // Dynamic Questions based on Category and Search
                 let activeQuestionKey = categoryKey;
-
-                // 1. Business Specific Search
                 if (categoryKey === 'business' && (intent.businessType || intent.customOccasion || intent.occasion)) {
                     const type = (intent.businessType || intent.customOccasion || intent.occasion || '').toLowerCase();
                     if (type.includes('hotel') || type.includes('restaurant')) activeQuestionKey = 'business_hotel';
@@ -141,19 +173,12 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                     else if (type.includes('retail') || type.includes('shop')) activeQuestionKey = 'business_retail';
                     else if (type.includes('studio') || type.includes('photo')) activeQuestionKey = 'business_studio';
                 }
-
-                // 2. Festival Specific Search
                 if (categoryKey === 'festival') {
                     const fest = (intent.customOccasion || intent.occasion || '').toLowerCase();
                     if (fest.includes('pongal')) activeQuestionKey = 'festival_pongal';
                     else if (fest.includes('diwali')) activeQuestionKey = 'festival_diwali';
                 }
-
-                // 3. Funeral Specific Search
-                if (categoryKey === 'funeral') {
-                    activeQuestionKey = 'funeral_memorial';
-                }
-
+                if (categoryKey === 'funeral') activeQuestionKey = 'funeral_memorial';
 
                 const categoryQuestion = t.questions[activeQuestionKey];
                 const categoryChoices = t.choices[activeQuestionKey];
@@ -161,9 +186,7 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                 return (
                     <div className="flex flex-col gap-8">
                         <h2 className="text-xl font-bold">{t.mood_layout}</h2>
-
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                            {/* Specific Line of Text / Business Name */}
                             <div className="flex flex-col gap-4">
                                 <label className="text-sm font-bold">
                                     {categoryKey === 'business' ? t.business_type_label : t.specific_line}
@@ -179,8 +202,6 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                     }}
                                 />
                             </div>
-
-                            {/* Theme Color */}
                             <div className="flex flex-col gap-4">
                                 <label className="text-sm font-bold">{t.theme_color}</label>
                                 <input
@@ -192,8 +213,6 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                 />
                             </div>
                         </div>
-
-                        {/* Category Specific Questions */}
                         {categoryQuestion && (
                             <div className="flex flex-col gap-4 p-4 bg-primary/5 rounded-xl border border-primary/10 animate-in fade-in zoom-in-95 duration-300">
                                 <label className="text-sm font-bold text-primary flex items-center gap-2">
@@ -213,16 +232,11 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                 </div>
                             </div>
                         )}
-
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                            {/* Layout Logic Toggle */}
                             <div className="flex flex-col gap-4">
                                 <label className="text-sm font-bold">{t.design_mode}</label>
                                 <div className="flex gap-4">
-                                    {[
-                                        { id: 'ai', label: t.mode_ai },
-                                        { id: 'real', label: t.mode_real }
-                                    ].map((m) => (
+                                    {[{ id: 'ai', label: t.mode_ai }, { id: 'real', label: t.mode_real }].map((m) => (
                                         <button
                                             key={m.id}
                                             onClick={() => setIntent({ ...intent, designMode: m.id })}
@@ -233,8 +247,6 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                     ))}
                                 </div>
                             </div>
-
-                            {/* Reference Image Option */}
                             <div className="flex flex-col gap-4">
                                 <label className="text-sm font-bold">{t.reference_image}</label>
                                 <button
@@ -247,9 +259,7 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                 <p className="text-[10px] text-slate-400 italic leading-tight">{t.ref_img_desc}</p>
                             </div>
                         </div>
-
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                            {/* People Toggle */}
                             <div className="flex flex-col gap-4">
                                 <label className="text-sm font-bold">{t.include_people}</label>
                                 <div className="flex gap-4">
@@ -264,8 +274,6 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                     ))}
                                 </div>
                             </div>
-
-                            {/* Technical Words */}
                             <div className="flex flex-col gap-4">
                                 <label className="text-sm font-bold">{t.tech_words}</label>
                                 <input
@@ -277,8 +285,6 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                                 />
                             </div>
                         </div>
-
-                        {/* Extra Refinement Note */}
                         <div className="flex flex-col gap-4">
                             <label className="text-sm font-bold">{t.extra_refinement}</label>
                             <textarea
@@ -299,7 +305,7 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col gap-4 py-8">
             <div className="flex flex-col gap-2 text-center">
-                <p className="text-sm uppercase font-bold text-primary tracking-widest">{t.step} {step} {t.of} 4</p>
+                <p className="text-sm uppercase font-bold text-primary tracking-widest">{t.step} {step} {t.of} 5</p>
                 <h2 className="text-3xl font-black">{isTamil ? jobType?.title_ta : jobType?.title_en}</h2>
             </div>
 
@@ -307,13 +313,13 @@ export default function IntentBuilder({ isTamil, jobType, intent, setIntent, ste
                 {renderStep()}
             </div>
 
-            <div className="flex justify-between gap-4">
-                <button onClick={onBack} className="flex-1 max-w-[150px] py-4 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold transition-all hover:bg-slate-200">{t.back}</button>
+            <div className="flex flex-row justify-between gap-3 sm:gap-4 px-1">
+                <button onClick={onBack} className="flex-1 py-3 sm:py-4 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold transition-all hover:bg-slate-200 text-sm sm:text-base">{t.back}</button>
                 <button
-                    onClick={step === 4 ? onGenerate : () => setStep(step + 1)}
-                    className="flex-1 max-w-[200px] py-4 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 transition-all hover:translate-y-[-2px]"
+                    onClick={step === 5 ? onGenerate : () => setStep(step + 1)}
+                    className="flex-[2] py-3 sm:py-4 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 transition-all hover:translate-y-[-2px] text-sm sm:text-base"
                 >
-                    {step === 4 ? t.generate : t.continue}
+                    {step === 5 ? t.generate : t.continue}
                 </button>
             </div>
         </div>

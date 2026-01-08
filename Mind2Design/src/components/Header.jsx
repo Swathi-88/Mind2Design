@@ -22,16 +22,16 @@ export default function Header({ view, setView, isTamil, setIsTamil }) {
                 </div>
                 <h2 className="text-lg font-bold tracking-tight">{t.title}</h2>
             </div>
-            <div className="flex flex-1 justify-end items-center gap-4">
+            <div className="flex flex-1 justify-end items-center gap-2 md:gap-4">
                 <div className="flex gap-2">
                     <button
                         onClick={() => setIsTamil(!isTamil)}
-                        className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-xs font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-md active:scale-95"
+                        className="flex min-w-[70px] md:min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 md:h-10 px-3 md:px-4 bg-primary text-white text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-md active:scale-95"
                     >
                         {isTamil ? 'English' : 'தமிழ்'}
                     </button>
-                    <button className="flex items-center justify-center rounded-lg h-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 gap-2 text-sm font-bold min-w-0 px-2.5 hover:bg-slate-200 transition-colors">
-                        <span className="material-symbols-outlined text-xl">help</span>
+                    <button className="flex items-center justify-center rounded-lg h-9 md:h-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 gap-2 text-sm font-bold min-w-0 px-2.5 hover:bg-slate-200 transition-colors">
+                        <span className="material-symbols-outlined text-lg md:text-xl">help</span>
                     </button>
                 </div>
             </div>
