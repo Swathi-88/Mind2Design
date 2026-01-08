@@ -1,127 +1,119 @@
 /**
  * PromptSynthesizer.js
- * Local "Expert System" Algorithm for synthesizing high-quality design prompts.
- * This simulates an ML-like reasoning process using a structured knowledge base 
- * of South Indian design tokens, layout patterns, and aesthetic rules.
+ * Local "Expert System" Algorithm for synthesizing high-quality, structured design prompts.
+ * Uses a deep knowledge base of South Indian design aesthetics for all categories.
  */
 
-const EXPERT_KNOWLEDGE = {
-    layouts: {
-        obituary: "centered portrait composition within a gold-bordered oval frame, respected title at top",
-        business_board: "bold horizontal shop frontage style, prominent brand name in large decorative typography",
-        festival_poster: "vibrant celebratory collage with traditional motifs at corners, central focus on the deity or celebration",
-        cracker_wrapper: "long rectangular landscape packaging layout, symmetrical fireworks art, side safety text blocks"
+const CATEGORY_KNOWLEDGE = {
+    festival: {
+        layout: "A professional vibrant celebratory collage, symmetrical composition with traditional motifs at corners, central focus on the celebration.",
+        aesthetic: "traditional Tamil cultural aesthetic, high-saturation colors, intricate temple-inspired borders, oil lamps (diyas), marigold flower garlands, silk fabric textures.",
+        motifs: {
+            pongal: "fresh sugarcane stalks leaning, traditional painted clay pot overflowing with rice, turmeric leaves, sun symbol, rural Tamil village background.",
+            diwali: "grand display of colorful firecrackers, multiple glowing clay lamps (diyas), festive sparkles, marigold decorations.",
+            vishu: "Vishu Kani arrangement with yellow flowers (Kanikkonna), traditional brass lamp (Nilavilakku), mirror, and fruits.",
+            onam: "Pookalam (floral carpet) in the foreground, palm trees, houseboat in the background, festive atmosphere."
+        }
     },
-    aesthetics: {
-        south_indian_local: "South Indian local shop aesthetic, high-saturation colors, vibrant flex banner texture, glossy offset print finish, hand-painted sign influences, regional cultural motifs",
-        traditional_tamil: "traditional Tamil cultural aesthetic, intricate temple-inspired borders, oil lamps (diyas), marigold flower garlands, silk fabric textures",
-        modern_retail: "modern Indian retail look, sharp product photography style, bright commercial lighting, bold catchy call-to-actions, high contrast"
+    crackers: {
+        layout: "A professional flat unfolded rectangular landscape wrapper design, strictly flat 2D graphic layout, symmetrical composition, bold and explosive visual energy.",
+        aesthetic: "South Indian local shop aesthetic, high-saturation colors, vibrant flex banner texture, glossy offset print finish, hand-painted signboard influences.",
+        product_focus: "powerful visual emphasis on the specific firework type, thick fuse details, dramatic ignition sparks, explosive glow effects, fiery light bursts.",
+        layout_details: "FLAT UNFOLDED WRAPPER: Long rectangular flat graphic, no 3D box shape, no 3D mockup, strictly flat design view, clear side safety blocks."
     },
-    motifs: {
-        pongal: "fresh sugarcane stalks leaning, traditional painted clay pot overflowing with rice, turmeric leaves, sun symbol, rural Tamil village background",
-        diwali: "grand display of colorful firecrackers, multiple glowing clay lamps (diyas), festive sparkles, marigold decorations",
-        hotel: "steaming hot food platters, traditional stainless steel service, authentic South Indian meal arrangement, warm inviting dining atmosphere",
-        juice: "beaded water droplets on fresh glass, vibrant tropical fruits, splash of juice, refreshing and chilled aesthetic",
-        funeral: "respectful floral wreaths, white lilies and jasmine, soft serene lighting, peaceful sacred atmosphere, muted elegant background"
+    funeral: {
+        layout: "A respectful and solemn centered portrait composition within a gold-bordered oval frame, respected title at top.",
+        aesthetic: "traditional Tamil cultural aesthetic, muted elegant backdrop, white lilies and jasmine garlands, soft serene lighting.",
+        motifs: "respectful floral wreaths, peaceful sacred atmosphere, eternal peace vibes."
     },
-    religion: {
-        hindu: "sacred Hindu symbols like Om and Swastika, divine presence of Lord Ganesha or Lakshmi in the background, traditional temple oil lamps, auspicious saffron and turmeric accents",
-        muslim: "elegant Islamic motifs, crescent moon and star symbol, mosque silhouette in far background, intricate geometric patterns, green and gold decorative elements",
-        christian: "sacred Christian symbols like the Holy Cross, soft divine light from above, presence of Jesus Christ figure in a serene artistic style, white doves, elegant church architecture motifs"
+    business: {
+        layout: "A bold horizontal shop frontage style or professional advertisement board, prominent brand center-focus.",
+        aesthetic: "modern Indian retail look or friendly local shop aesthetic, sharp product photography style, bright commercial lighting, high contrast.",
+        niche: {
+            hotel: "steaming hot authentic South Indian food platters, traditional stainless steel service, warm inviting dining atmosphere.",
+            juice: "beaded water droplets on fresh glass, vibrant tropical fruits, splash of juice, refreshing and chilled aesthetic.",
+            printing: "showcase of flex banners, visiting cards, and offset prints, professional design studio vibe.",
+            retail: "organized product shelves, bright store lighting, commercial sales banners and price tags."
+        }
     }
+};
+
+const RELIGION_DESC = {
+    hindu: "sacred Hindu symbols like Om and Swastika, divine presence of Lord Ganesha or Lakshmi in the background, traditional temple oil lamps, auspicious saffron and turmeric accents.",
+    muslim: "elegant Islamic motifs, crescent moon and star symbol, mosque silhouette in far background, intricate geometric patterns, green and gold decorative elements.",
+    christian: "sacred Christian symbols like the Holy Cross, soft divine light from above, presence of Jesus Christ figure in a serene artistic style, white doves, elegant church architecture motifs."
 };
 
 /**
  * The "Synthesis Algorithm"
- * Composites user intent into a descriptive DALL-E 3 prompt.
+ * Composites user intent into a highly detailed DALL-E 3 prompt structure.
  */
 export const synthesizePrompt = async (jobType, intent) => {
     // Artificial delay to simulate "optimization" processing (UX)
     await new Promise(resolve => setTimeout(resolve, 800));
 
     const parts = [];
+    const type = jobType?.id || 'festival';
+    const config = CATEGORY_KNOWLEDGE[type] || CATEGORY_KNOWLEDGE.festival;
+    const subject = (intent.customOccasion || intent.occasion || intent.businessType || 'General').toLowerCase();
 
-    // 1. Determine Core Layout & Aesthetic
-    let layout = EXPERT_KNOWLEDGE.layouts.business_board;
-    let aesthetic = EXPERT_KNOWLEDGE.aesthetics.south_indian_local;
+    // SECTION 1: CORE THEME & AESTHETIC
+    parts.push(`TITLE SECTION: ${config.layout}`);
+    parts.push(`AESTHETIC STYLE: ${config.aesthetic}`);
 
-    if (jobType?.id === 'funeral') {
-        layout = EXPERT_KNOWLEDGE.layouts.obituary;
-        aesthetic = EXPERT_KNOWLEDGE.aesthetics.traditional_tamil;
-    } else if (jobType?.id === 'festival') {
-        layout = EXPERT_KNOWLEDGE.layouts.festival_poster;
-        aesthetic = EXPERT_KNOWLEDGE.aesthetics.traditional_tamil;
-    } else if (jobType?.id === 'crackers') {
-        layout = EXPERT_KNOWLEDGE.layouts.cracker_wrapper;
+    // SECTION 2: PRODUCT/SUBJECT FOCUS
+    let subjectFocus = `Subject focus: ${subject.toUpperCase()}`;
+    if (type === 'crackers') {
+        subjectFocus += ` -- powerful visual emphasis on traditional ${subject}, thick fuse details, dramatic ignition sparks, explosive glow effects (visual only), fiery light bursts, intense celebratory atmosphere.`;
+    } else if (type === 'festival') {
+        const motif = config.motifs[subject] || "traditional festive elements, cultural celebration motifs.";
+        subjectFocus += ` -- ${motif} Vibrant colors and deep cultural authenticity.`;
+    } else if (type === 'business') {
+        const nicheKey = Object.keys(config.niche).find(k => subject.includes(k)) || 'retail';
+        subjectFocus += ` -- ${config.niche[nicheKey]}`;
+    } else if (type === 'funeral') {
+        subjectFocus += ` -- ${config.motifs}`;
+    }
+    parts.push(subjectFocus);
+
+    // SECTION 3: RELIGION & SYMBOLS
+    if (intent.religion && intent.religion !== 'secular' && RELIGION_DESC[intent.religion]) {
+        parts.push(`CULTURAL CONTEXT: ${RELIGION_DESC[intent.religion]}`);
+    } else {
+        parts.push(`CULTURAL CONTEXT: Secular commercial design, no religious iconography, inclusive cultural patterns.`);
     }
 
-    parts.push(`A professional ${layout}`);
-    parts.push(aesthetic);
-
-    // 2. Inject Subject & Niche
-    const subject = intent.customOccasion || intent.occasion || intent.businessType || 'General';
-    parts.push(`specifically for: ${subject}`);
-
-    // 2.5 Inject Religious Context
-    if (intent.religion && intent.religion !== 'secular') {
-        parts.push(EXPERT_KNOWLEDGE.religion[intent.religion]);
-    }
-
-    // 3. Dynamic Motif Injection based on niche/category
-    const niche = (subject + (intent.categoryAnswer || '')).toLowerCase();
-
-    if (niche.includes('pongal')) parts.push(EXPERT_KNOWLEDGE.motifs.pongal);
-    else if (niche.includes('diwali') || jobType?.id === 'crackers') parts.push(EXPERT_KNOWLEDGE.motifs.diwali);
-    else if (niche.includes('hotel') || niche.includes('food')) parts.push(EXPERT_KNOWLEDGE.motifs.hotel);
-    else if (niche.includes('juice') || niche.includes('shake')) parts.push(EXPERT_KNOWLEDGE.motifs.juice);
-    else if (jobType?.id === 'funeral') parts.push(EXPERT_KNOWLEDGE.motifs.funeral);
-
-    // 4. Style Modifiers
-    const styleMods = intent.modifiers || [];
-
-    if (intent.style === 'traditional' || styleMods.includes('more_traditional')) {
-        parts.push("deeply traditional elements, heritage motifs, authentic cultural ornaments");
-    }
-
-    if (intent.style === 'luxury_brand') {
-        parts.push("premium gold foil accents, elegant serif typography, elite branding");
-    }
-
-    if (intent.style === 'festive_pop' || styleMods.includes('more_festive')) {
-        parts.push("bright neon highlights, explosive energy, celebratory atmosphere, high saturation");
-    }
-
-    if (intent.style === 'local_shop') {
-        parts.push("authentic local street shop board style, vibrant and inviting, hand-painted aesthetic");
-    }
-
-    if (styleMods.includes('lock_layout')) {
-        parts.push("maintain strict composition symmetry, preserve object spatial hierarchy");
-    }
-
-    if (styleMods.includes('less_decoration')) {
-        parts.push("minimalist layout, clean white space focus, reduced ornamental complexity");
-    }
-
-    // 5. User Specific Controls
-    if (intent.themeColor) parts.push(`dominant theme color: ${intent.themeColor}`);
-
+    // SECTION 4: BRANDING & TYPOGRAPHY
     if (intent.specificText) {
         const isTamilText = /[\u0B80-\u0BFF]/.test(intent.specificText);
-        const scriptInstruction = isTamilText ? "exactly in Tamil script" : "using elegant typography";
-        parts.push(`prominently feature the text "${intent.specificText}" ${scriptInstruction} in a culturally appropriate decorative South Indian font style`);
+        const scriptInstruction = isTamilText ? "exactly in Tamil script" : "in English using bold decorative South Indian typography";
+        parts.push(`BRANDING: Prominently feature the text "${intent.specificText}" at the center ${scriptInstruction}, culturally appropriate font style, red and yellow color dominance (or matched to theme), thick outlines, slight 3D emboss effect.`);
+    } else {
+        parts.push("BRANDING: Generic placeholders for text, focus on layout and visual balance.");
     }
 
-    // 5.5 Enhanced Designer Note Integration
+    // SECTION 5: DECOR & LAYOUT DETAILS
+    let decor = "DECOR ELEMENTS: Marigold flower garlands framing the borders, festive sparkles, traditional patterns inspired by temple borders, silk textures.";
+    if (type === 'crackers') {
+        decor += " Symmetrical fireworks bursts in the background.";
+    } else if (type === 'funeral') {
+        decor = "DECOR ELEMENTS: Respectful white floral borders, jasmine garlands, soft candlelight glow.";
+    }
+    parts.push(decor);
+
+    parts.push(`LAYOUT DETAILS: ${type === 'crackers' ? config.layout_details : 'Centered composition, balanced symmetry, professional graphic hierarchy.'}`);
+
+    // SECTION 6: CONSTRAINTS & USER NOTES
+    const styleMods = intent.modifiers || [];
+    let constraints = `STYLE CONSTRAINTS: Graphic-only composition, ${intent.includePeople ? 'featuring people in traditional attire' : 'no human faces'}, ${intent.style === 'luxury_brand' ? 'premium gold foil' : 'vibrant colors'}.`;
+    parts.push(constraints);
+
     if (intent.extraNote && intent.extraNote.trim() !== '') {
         parts.push(`USER-DIRECTED ARTISTIC INSTRUCTION: ${intent.extraNote}`);
     }
 
-    if (intent.includePeople) parts.push("featuring people in traditional South Indian attire with authentic expressions");
-    else parts.push("graphic-only composition, no human faces, focus on objects and typography");
+    // SECTION 7: TECHNICAL SPECS
+    parts.push("TECHNICAL SPECS: 8K resolution, cinematic lighting, ultra-sharp details, commercial-grade graphic design, print-ready offset design, 300 DPI, high-resolution digital art, realistic print texture.");
 
-    // 6. Technical Quality & Format
-    parts.push("8k resolution, cinematic lighting, sharp details, commercial graphic design quality, print-ready 300 DPI composition, high resolution digital art");
-
-    return parts.join(", ");
+    return parts.join("\n\n");
 };
