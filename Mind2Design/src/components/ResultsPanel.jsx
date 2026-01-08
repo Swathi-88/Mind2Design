@@ -47,8 +47,8 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
 
         setModifiers(newMods);
         setIsRegenerating(true);
-        // Use synthesis for high-quality refinement
-        const newPrompt = await synthesizePrompt(jobType, { ...intent, extraNote: mod });
+        // Use synthesis for high-quality refinement, preserving the extra note
+        const newPrompt = await synthesizePrompt(jobType, { ...intent, modifiers: newMods });
         setEditingPrompt(newPrompt);
         setIsRegenerating(false);
     };
@@ -65,7 +65,9 @@ export default function ResultsPanel({ isTamil, jobType, intent, compiledPrompt,
 
     const handleManualRegen = async () => {
         setIsRegenerating(true);
-        const tempIntent = { ...intent, extraNote: userChange || intent.extraNote };
+        // Combine original intent note with the new user feedback from results panel
+        const combinedNote = intent.extraNote ? `${intent.extraNote}. ${userChange}` : userChange;
+        const tempIntent = { ...intent, extraNote: combinedNote, modifiers };
         const newPrompt = await synthesizePrompt(jobType, tempIntent);
         setEditingPrompt(newPrompt);
         setShowSuccess(true);

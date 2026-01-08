@@ -130,7 +130,7 @@ export const compilePrompt = (jobType, intent, modifiers = []) => {
 
     // 10. Technical Words & Extra Notes
     if (intent.techWords) parts.push(`technical parameters: ${intent.techWords}`);
-    if (intent.extraNote) parts.push(`special instruction: ${intent.extraNote}`);
+    if (intent.extraNote) parts.push(`CRITICAL DESIGN INSTRUCTION: ${intent.extraNote}`);
 
     // 11. Refinement Logic
     if (modifiers.includes('lock_layout')) parts.push("preserve current composition and object placements, strictly keep layout structure");

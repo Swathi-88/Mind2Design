@@ -77,18 +77,46 @@ export const synthesizePrompt = async (jobType, intent) => {
     else if (jobType?.id === 'funeral') parts.push(EXPERT_KNOWLEDGE.motifs.funeral);
 
     // 4. Style Modifiers
-    if (intent.style === 'traditional') parts.push("deeply traditional elements, heritage motifs");
-    else if (intent.style === 'luxury_brand') parts.push("premium gold foil accents, elegant serif typography, elite branding");
-    else if (intent.style === 'festive_pop') parts.push("bright neon highlights, explosive energy, celebratory atmosphere");
-    else if (intent.style === 'local_shop') parts.push("authentic local street shop board style, vibrant and inviting");
+    const styleMods = intent.modifiers || [];
+
+    if (intent.style === 'traditional' || styleMods.includes('more_traditional')) {
+        parts.push("deeply traditional elements, heritage motifs, authentic cultural ornaments");
+    }
+
+    if (intent.style === 'luxury_brand') {
+        parts.push("premium gold foil accents, elegant serif typography, elite branding");
+    }
+
+    if (intent.style === 'festive_pop' || styleMods.includes('more_festive')) {
+        parts.push("bright neon highlights, explosive energy, celebratory atmosphere, high saturation");
+    }
+
+    if (intent.style === 'local_shop') {
+        parts.push("authentic local street shop board style, vibrant and inviting, hand-painted aesthetic");
+    }
+
+    if (styleMods.includes('lock_layout')) {
+        parts.push("maintain strict composition symmetry, preserve object spatial hierarchy");
+    }
+
+    if (styleMods.includes('less_decoration')) {
+        parts.push("minimalist layout, clean white space focus, reduced ornamental complexity");
+    }
 
     // 5. User Specific Controls
     if (intent.themeColor) parts.push(`dominant theme color: ${intent.themeColor}`);
+
     if (intent.specificText) {
         const isTamilText = /[\u0B80-\u0BFF]/.test(intent.specificText);
         const scriptInstruction = isTamilText ? "exactly in Tamil script" : "using elegant typography";
         parts.push(`prominently feature the text "${intent.specificText}" ${scriptInstruction} in a culturally appropriate decorative South Indian font style`);
     }
+
+    // 5.5 Enhanced Designer Note Integration
+    if (intent.extraNote && intent.extraNote.trim() !== '') {
+        parts.push(`USER-DIRECTED ARTISTIC INSTRUCTION: ${intent.extraNote}`);
+    }
+
     if (intent.includePeople) parts.push("featuring people in traditional South Indian attire with authentic expressions");
     else parts.push("graphic-only composition, no human faces, focus on objects and typography");
 
