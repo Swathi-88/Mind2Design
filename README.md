@@ -1,6 +1,6 @@
 # Mind2Design
 
-Mind2Design is a specialized Generative AI application built to democratize high-quality, culturally authentic graphic design for the South Indian market. It leverages a local "Expert System" to synthesize deep cultural context (Tamil festivals, rituals, business aesthetics) into precise prompt engineering for DALL-E 3, enabling users to create professional-grade designs without design expertise.
+Mind2Design is a specialized web application built to democratize high-quality, culturally authentic graphic design for the South Indian market. It leverages a local "Expert System" to synthesize deep cultural context (Tamil festivals, rituals, business aesthetics) into precise prompt engineering for DALL-E 3, enabling users to create professional-grade designs without design expertise.
 
 ## Table of Contents
 
